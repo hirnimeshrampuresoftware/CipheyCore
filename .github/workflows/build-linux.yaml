@@ -33,7 +33,11 @@ jobs:
        /opt/python/${{matrix.abi}}/bin/python3 -m pip install poetry auditwheel setuptools
     - name: Do build
       run: |
+        pwd
+        ls
         mkdir build && cd build
+        pwd
+        ls
         cmake3 .. -DCIPHEY_CORE_TEST=OFF -DCIPHEY_CORE_PYTHON=$(echo /opt/python/${{matrix.abi}}/include/python*)
         cmake3 --build .
     - name: Create python package
@@ -83,7 +87,11 @@ jobs:
             make && \
             make install && \
             pip install poetry auditwheel setuptools && \
+            pwd && \
+            ls && \
             mkdir build && cd build && \
+            pwd && \
+            ls && \
             cmake3 .. -DCIPHEY_CORE_TEST=OFF -DCIPHEY_CORE_PYTHON=$(echo /opt/python/${{matrix.pyver}}/include/python*)
             cmake3 --build . && \
             cd build && \
