@@ -48,6 +48,48 @@ jobs:
       with:
         name: linux64
         path: build
+        
+  Build-aarch64:
+    name: "Build and test ${{ matrix.pyver }} aarch64 wheel"
+    strategy:
+      matrix:
+        pyver: [cp36-cp36m, cp37-cp37m, cp38-cp38, cp39-cp39]
+      fail-fast: false
+    runs-on: ubuntu-latest
+    env:
+      py: /opt/python/${{ matrix.pyver }}/bin/python
+      img: quay.io/pypa/manylinux2014_aarch64
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Set up QEMU
+      id: qemu
+      uses: docker/setup-qemu-action@v1
+    - name: Build Wheel
+      run: |
+            docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
+            ${{ env.img }} \
+            bash -exc '${{ env.py }} -m venv .env && \
+            source .env/bin/activate && \
+            pip install --upgrade pip && \
+            yum -y install cmake3 boost-devel llvm-toolset-7 && \
+            cd /tmp && \
+            curl -L https://github.com/swig/swig/archive/rel-4.0.1.tar.gz -o a.tar.gz && \
+            tar -xzf a.tar.gz && \
+            cd swig* && \
+            ./autogen.sh && \
+            ./configure && \
+            make && \
+            make install && \
+            pip install poetry auditwheel setuptools && \
+            mkdir build && cd build && \
+            cmake3 .. -DCIPHEY_CORE_TEST=OFF -DCIPHEY_CORE_PYTHON=$(echo /opt/python/${{matrix.abi}}/include/python*) -DCMAKE_BUILD_TYPE=Release && \
+            cmake3 --build . && \
+            cd build && \
+            python -m poetry build && \
+            python -m auditwheel show dist/*.whl && \
+            python -m auditwheel repair dist/*.whl && \
+            deactivate'
 #  build-linux32:
 #    name: Build Linux32 package
 #    runs-on: ubuntu-latest
