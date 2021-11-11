@@ -84,12 +84,12 @@ jobs:
             make install && \
             pip install poetry auditwheel setuptools && \
             mkdir build && cd build && \
-            cmake3 .. -DCIPHEY_CORE_TEST=OFF -DCIPHEY_CORE_PYTHON=$(echo /opt/python/${{matrix.pyver}}/bin/python*)
+            cmake3 .. -DCIPHEY_CORE_TEST=OFF -DCIPHEY_CORE_PYTHON=$(echo /opt/python/${{matrix.pyver}}/include/python*)
             cmake3 --build . && \
             cd build && \
-            python -m poetry build && \
-            python -m auditwheel show dist/*.whl && \
-            python -m auditwheel repair dist/*.whl && \
+            ${{ matrix.py }} -m poetry build && \
+            ${{ matrix.py }} -m auditwheel show dist/*.whl && \
+            ${{ matrix.py }} -m auditwheel repair dist/*.whl && \
             deactivate'
 #  build-linux32:
 #    name: Build Linux32 package
