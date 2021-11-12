@@ -86,6 +86,7 @@ jobs:
             ./configure && \
             make && \
             make install && \
+            cd .. && \
             pip install poetry auditwheel setuptools && \
             pwd && \
             ls && \
