@@ -78,7 +78,7 @@ jobs:
             yum install -y epel-release && \
             yum-config-manager --enable epel && \
             yum -y install cmake3 boost-devel && \
-            cd /tmp && \
+            #cd /tmp && \
             curl -L https://github.com/swig/swig/archive/refs/tags/v4.0.2.tar.gz -o a.tar.gz && \
             tar -xzf a.tar.gz && \
             cd swig* && \
